@@ -1,7 +1,10 @@
 package com.autobots.automanager.modelo;
 
+import org.springframework.stereotype.Component;
+
 import com.autobots.automanager.entidades.Endereco;
 
+@Component
 public class EnderecoAtualizador {
 	private StringVerificadorNulo verificador = new StringVerificadorNulo();
 

@@ -1,9 +1,12 @@
 package com.autobots.automanager.modelo;
 
-import java.util.List;
+import java.util.Set;
+
+import org.springframework.stereotype.Component;
 
 import com.autobots.automanager.entidades.Telefone;
 
+@Component
 public class TelefoneAtualizador {
 	private StringVerificadorNulo verificador = new StringVerificadorNulo();
 
@@ -18,14 +21,16 @@ public class TelefoneAtualizador {
 		}
 	}
 
-	public void atualizar(List<Telefone> telefones, List<Telefone> atualizacoes) {
+	public void atualizar(Set<Telefone> telefones, Set<Telefone> atualizacoes) {
 		for (Telefone atualizacao : atualizacoes) {
-			for (Telefone telefone : telefones) {
-				if (atualizacao.getId() != null) {
+			if(atualizacao.getId() == null) {
+				telefones.add(atualizacao);
+			} else {
+				for (Telefone telefone : telefones) {
 					if (atualizacao.getId() == telefone.getId()) {
 						atualizar(telefone, atualizacao);
 					}
-				}
+				}				
 			}
 		}
 	}
