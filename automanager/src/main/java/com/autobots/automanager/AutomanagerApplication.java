@@ -46,7 +46,7 @@ public class AutomanagerApplication {
 			Endereco endereco = new Endereco();
 			endereco.setEstado("Meu Estado");
 			endereco.setCidade("Minha Cidade");
-			endereco.setBairro("Meu bairro");
+			endereco.setBairro("Meu Bairro");
 			endereco.setRua("Avenida da Mariana");
 			endereco.setNumero("22222");
 			endereco.setCodigoPostal("22021001");
