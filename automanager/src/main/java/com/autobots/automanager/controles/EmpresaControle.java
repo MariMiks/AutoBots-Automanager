@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ public class EmpresaControle {
 	@Autowired
 	AdicionadorLinkEmpresa adicionadorLink;
 	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@GetMapping("/empresas")
 	public ResponseEntity<?> buscarEmpresas() {
 		List<Empresa> empresas = repositorioEmpresa.findAll();
@@ -39,6 +41,8 @@ public class EmpresaControle {
 			return resposta;
 		}
 	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@GetMapping("/empresas/{idEmpresa}")
 	public ResponseEntity<Empresa> buscarEmpresaPorId(@PathVariable("idEmpresa") Long idEmpresa) {
 		Empresa empresa = repositorioEmpresa.findById(idEmpresa).get();
@@ -51,6 +55,8 @@ public class EmpresaControle {
 			return resposta;
 		}
 	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@DeleteMapping("/empresas/{idEmpresa}")
 	public ResponseEntity<Object> excluirEmpresa(@PathVariable("idEmpresa") Long idEmpresa) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -61,6 +67,8 @@ public class EmpresaControle {
 		}
 		return new ResponseEntity<>(status);
 	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@PutMapping("/empresas/atualizar")
 	public ResponseEntity<Object> atualizarEmpresa(@RequestBody Empresa atualizacao) {
 		HttpStatus status = HttpStatus.CONFLICT;
@@ -75,6 +83,8 @@ public class EmpresaControle {
 		}
 		return new ResponseEntity<>(status);
 	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@PostMapping("/empresas/cadastrar")
 	public ResponseEntity<Object> cadastrarEmpresa(@RequestBody Empresa empresa) {
 		HttpStatus status = HttpStatus.CONFLICT;
@@ -84,6 +94,8 @@ public class EmpresaControle {
 		}
 		return new ResponseEntity<>(status);
 	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@PostMapping("/empresas/{idEmpresa}/associarUsuario")
 	public ResponseEntity<?> associarUsuario(@PathVariable("idEmpresa") Long idEmpresa, @RequestBody Usuario usuario) {
 		Empresa empresa = repositorioEmpresa.findById(idEmpresa).get();

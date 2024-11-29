@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ public class UsuarioControle {
 	@Autowired
 	private AdicionadorLinkUsuario adicionadorLink;
 
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
 	@GetMapping("/{idUsuario}")
 	public ResponseEntity<Usuario> obterUsuario(@PathVariable("idUsuario") long idUsuario) {
 		Usuario usuario = repositorio.findById(idUsuario).get();
@@ -50,6 +52,7 @@ public class UsuarioControle {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@GetMapping
 	public ResponseEntity<List<Usuario>> obterUsuarios() {
 		List<Usuario> usuarios = repositorio.findAll();
@@ -63,6 +66,7 @@ public class UsuarioControle {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@PostMapping("/cadastrar")
 	public ResponseEntity<?> cadastrarUsuario(@RequestBody Usuario usuario) {
 		HttpStatus status = HttpStatus.CONFLICT;
@@ -73,6 +77,7 @@ public class UsuarioControle {
 		return new ResponseEntity<>(status);
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@PutMapping("/atualizar")
 	public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario atualizacao) {		
 		HttpStatus status = HttpStatus.CONFLICT;
@@ -88,6 +93,7 @@ public class UsuarioControle {
 		return new ResponseEntity<>(status);
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@DeleteMapping("/{idUsuario}")
 	public ResponseEntity<?> excluirUsuario(@PathVariable("idUsuario") long idUsuario) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -99,6 +105,7 @@ public class UsuarioControle {
 		return new ResponseEntity<>(status);
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@PostMapping("/{idUsuario}/adicionarTelefones")
 	public Set<Telefone> adicionarTelefones(@PathVariable("idUsuario") Long idUsuario, @RequestBody Set<Telefone> telefones) {
 		Usuario usuario = repositorio.findById(idUsuario).get();
@@ -106,11 +113,13 @@ public class UsuarioControle {
 		return repositorio.save(usuario).getTelefones();
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
 	@GetMapping("/{idUsuario}/listarTelefones")
 	public Set<Telefone> listarTelefones(@PathVariable("idUsuario") Long idUsuario) {
 		return repositorio.getById(idUsuario).getTelefones();
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@PutMapping("/{idUsuario}/atualizarTelefones")
 	public Set<Telefone> atualizarTelefones(@PathVariable("idUsuario") Long idUsuario, @RequestBody Set<Telefone> telefones) {
 		Usuario usuario = repositorio.findById(idUsuario).get();
@@ -118,6 +127,7 @@ public class UsuarioControle {
 		return repositorio.save(usuario).getTelefones();
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@DeleteMapping("/{idUsuario}/excluirTelefones")
 	public Set<Telefone> excluirTelefones(@PathVariable("idUsuario") Long idUsuario, @RequestBody Set<Long> idsTelefones) {
 		Usuario usuario = repositorio.findById(idUsuario).get();
@@ -125,11 +135,13 @@ public class UsuarioControle {
 		return repositorio.save(usuario).getTelefones();
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@GetMapping("/{idUsuario}/listarDocumentos")
 	public Set<Documento> listarDocumentos(@PathVariable("idUsuario") Long idUsuario) {
 		return repositorio.findById(idUsuario).get().getDocumentos();
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@PostMapping("/{idUsuario}/adicionarDocumentos")
 	public Set<Documento> adicionarDocumentos(@PathVariable("idUsuario") Long idUsuario, @RequestBody List<Documento> documentos) {
 		Usuario usuario = repositorio.findById(idUsuario).get();
@@ -137,6 +149,7 @@ public class UsuarioControle {
 		return repositorio.save(usuario).getDocumentos();
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@PutMapping("/{idUsuario}/atualizarDocumentos")
 	public Set<Documento> atualizarDocumentos(@PathVariable("idUsuario") Long idUsuario, @RequestBody Set<Documento> documentos) {
 		Usuario usuario = repositorio.findById(idUsuario).get();
@@ -144,6 +157,7 @@ public class UsuarioControle {
 		return repositorio.save(usuario).getDocumentos();
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
 	@DeleteMapping("/{idUsuario}/excluirDocumentos")
 	public Set<Documento> excluirDocumentos(@PathVariable("idUsuario") Long idUsuario, @RequestBody List<Long> idsDocumentos) {
 		Usuario usuario = repositorio.findById(idUsuario).get();

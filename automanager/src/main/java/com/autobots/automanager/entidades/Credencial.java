@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Credencial {
+public class Credencial {
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -25,4 +25,8 @@ public abstract class Credencial {
 	private Date ultimoAcesso;
 	@Column(nullable = false)
 	private boolean inativo;
+	@Column(nullable = false, unique = true)
+	private String nomeUsuario;
+	@Column(nullable = false)
+	private String senha;
 }

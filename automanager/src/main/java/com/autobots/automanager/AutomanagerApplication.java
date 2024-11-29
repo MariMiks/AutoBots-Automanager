@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.autobots.automanager.entidades.CredencialUsuarioSenha;
+import com.autobots.automanager.entidades.Credencial;
 import com.autobots.automanager.entidades.Documento;
 import com.autobots.automanager.entidades.Email;
 import com.autobots.automanager.entidades.Empresa;
@@ -19,7 +20,7 @@ import com.autobots.automanager.entidades.Telefone;
 import com.autobots.automanager.entidades.Usuario;
 import com.autobots.automanager.entidades.Veiculo;
 import com.autobots.automanager.entidades.Venda;
-import com.autobots.automanager.enums.PerfilUsuario;
+import com.autobots.automanager.enums.Perfil;
 import com.autobots.automanager.enums.TipoDocumento;
 import com.autobots.automanager.enums.TipoVeiculo;
 import com.autobots.automanager.repositorios.EmpresaRepositorio;
@@ -38,7 +39,9 @@ public class AutomanagerApplication {
 
 		@Override
 		public void run(String... args) throws Exception {
-
+			
+			BCryptPasswordEncoder codificador = new BCryptPasswordEncoder();
+			
 			Empresa empresa = new Empresa();
 			empresa.setRazaoSocial("Car service toyota ltda");
 			empresa.setNomeFantasia("Car service manutenção veicular");
@@ -59,14 +62,61 @@ public class AutomanagerApplication {
 			telefoneEmpresa.setNumero("986454527");
 
 			empresa.getTelefones().add(telefoneEmpresa);
+			
+			// ADMIN
+			Usuario adm = new Usuario();
+			adm.setNome("Pedro Alcântara de Bragança e Bourbon");
+			adm.setNomeSocial("Dom Pedro");
+			adm.getPerfis().add(Perfil.ROLE_ADMIN);
 
+			Email emailAdm = new Email();
+			emailAdm.setEndereco("a@a.com");
+
+			adm.getEmails().add(emailAdm);
+
+			Endereco enderecoAdm = new Endereco();
+			enderecoAdm.setEstado("São Paulo");
+			enderecoAdm.setCidade("São Paulo");
+			enderecoAdm.setBairro("Jardins");
+			enderecoAdm.setRua("Av. São Gabriel");
+			enderecoAdm.setNumero("00");
+			enderecoAdm.setCodigoPostal("01435-001");
+
+			adm.setEndereco(enderecoAdm);
+
+			empresa.getUsuarios().add(adm);
+
+			Telefone telefoneAdm = new Telefone();
+			telefoneAdm.setDdd("011");
+			telefoneAdm.setNumero("9854633728");
+
+			adm.getTelefones().add(telefoneAdm);
+
+			Documento cpfAdm = new Documento();
+			cpfAdm.setDataEmissao(new Date());
+			cpfAdm.setNumero("856473811169");
+			cpfAdm.setTipo(TipoDocumento.CPF);
+
+			adm.getDocumentos().add(cpfAdm);
+
+			Credencial credencialAdm = new Credencial();
+			credencialAdm.setInativo(false);
+			credencialAdm.setNomeUsuario("dompedroadmin");
+			credencialAdm.setSenha(codificador.encode("123456"));
+			credencialAdm.setCriacao(new Date());
+			credencialAdm.setUltimoAcesso(new Date());
+
+			adm.setCredencial(credencialAdm);		
+			
+			
+			// FUNCIONARIO
 			Usuario funcionario = new Usuario();
-			funcionario.setNome("Mariana Izumi Kuroshima da Silva");
-			funcionario.setNomeSocial("Mariana Izumi");
-			funcionario.getPerfis().add(PerfilUsuario.FUNCIONARIO);
+			funcionario.setNome("Pedro Alcântara de Bragança e Bourbon");
+			funcionario.setNomeSocial("Dom Pedro");
+			funcionario.getPerfis().add(Perfil.ROLE_GERENTE);
 
 			Email emailFuncionario = new Email();
-			emailFuncionario.setEndereco("emailfunc@a.com");
+			emailFuncionario.setEndereco("a@a.com");
 
 			funcionario.getEmails().add(emailFuncionario);
 
@@ -84,44 +134,46 @@ public class AutomanagerApplication {
 
 			Telefone telefoneFuncionario = new Telefone();
 			telefoneFuncionario.setDdd("011");
-			telefoneFuncionario.setNumero("991234567");
+			telefoneFuncionario.setNumero("9854633728");
 
 			funcionario.getTelefones().add(telefoneFuncionario);
 
 			Documento cpf = new Documento();
 			cpf.setDataEmissao(new Date());
-			cpf.setNumero("00000000000");
+			cpf.setNumero("856473819229");
 			cpf.setTipo(TipoDocumento.CPF);
 
 			funcionario.getDocumentos().add(cpf);
 
-			CredencialUsuarioSenha credencialFuncionario = new CredencialUsuarioSenha();
+			Credencial credencialFuncionario = new Credencial();
 			credencialFuncionario.setInativo(false);
-			credencialFuncionario.setNomeUsuario("marianafuncionario");
-			credencialFuncionario.setSenha("123456");
+			credencialFuncionario.setNomeUsuario("dompedrofuncionario");
+			credencialFuncionario.setSenha(codificador.encode("123456"));
 			credencialFuncionario.setCriacao(new Date());
 			credencialFuncionario.setUltimoAcesso(new Date());
 
-			funcionario.getCredenciais().add(credencialFuncionario);
+			funcionario.setCredencial(credencialFuncionario);
 
+			
+			// VENDEDOR
 			Usuario fornecedor = new Usuario();
 			fornecedor.setNome("Componentes varejo de partes automotivas ltda");
 			fornecedor.setNomeSocial("Loja do carro, vendas de componentes automotivos");
-			fornecedor.getPerfis().add(PerfilUsuario.FORNECEDOR);
+			fornecedor.getPerfis().add(Perfil.ROLE_VENDEDOR);
 
 			Email emailFornecedor = new Email();
-			emailFornecedor.setEndereco("emailfornecedor@f.com");
+			emailFornecedor.setEndereco("f@f.com");
 
 			fornecedor.getEmails().add(emailFornecedor);
 
-			CredencialUsuarioSenha credencialFornecedor = new CredencialUsuarioSenha();
+			Credencial credencialFornecedor = new Credencial();
 			credencialFornecedor.setInativo(false);
-			credencialFornecedor.setNomeUsuario("marianafornecedor");
-			credencialFornecedor.setSenha("123456");
+			credencialFornecedor.setNomeUsuario("dompedrofornecedor");
+			credencialFornecedor.setSenha(codificador.encode("123456"));
 			credencialFornecedor.setCriacao(new Date());
 			credencialFornecedor.setUltimoAcesso(new Date());
 
-			fornecedor.getCredenciais().add(credencialFornecedor);
+			fornecedor.setCredencial(credencialFornecedor);
 
 			Documento cnpj = new Documento();
 			cnpj.setDataEmissao(new Date());
@@ -158,7 +210,7 @@ public class AutomanagerApplication {
 			Usuario cliente = new Usuario();
 			cliente.setNome("Pedro Alcântara de Bragança e Bourbon");
 			cliente.setNomeSocial("Dom pedro cliente");
-			cliente.getPerfis().add(PerfilUsuario.CLIENTE);
+			cliente.getPerfis().add(Perfil.ROLE_CLIENTE);
 
 			Email emailCliente = new Email();
 			emailCliente.setEndereco("c@c.com");
@@ -172,14 +224,14 @@ public class AutomanagerApplication {
 
 			cliente.getDocumentos().add(cpfCliente);
 
-			CredencialUsuarioSenha credencialCliente = new CredencialUsuarioSenha();
+			Credencial credencialCliente = new Credencial();
 			credencialCliente.setInativo(false);
 			credencialCliente.setNomeUsuario("dompedrocliente");
-			credencialCliente.setSenha("123456");
+			credencialCliente.setSenha(codificador.encode("123456"));
 			credencialCliente.setCriacao(new Date());
 			credencialCliente.setUltimoAcesso(new Date());
 
-			cliente.getCredenciais().add(credencialCliente);
+			cliente.setCredencial(credencialCliente);
 
 			Endereco enderecoCliente = new Endereco();
 			enderecoCliente.setEstado("São Paulo");
